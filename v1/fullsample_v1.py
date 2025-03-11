@@ -1,4 +1,3 @@
-import hmac
 import time
 from enum import Enum
 import requests
@@ -19,15 +18,6 @@ class YourClassNameHere:
         self.proxies = proxies
         self.logger = None  # You might want to initialize your logger here
 
-    def get_hmac_sha256(self, source: str) -> str:
-        """
-        :param source: the source string
-        :return: HMAC-SHA256 string
-        """
-        print(source)
-        hmac_sha256 = hmac.new(self.secret.encode(encoding='utf-8'), source.encode(encoding='utf-8'), hashlib.sha256)
-        return hmac_sha256.hexdigest()
-
     def get_md5_32(self, source: str) -> str:
         """
         :param source: the source string
@@ -36,14 +26,35 @@ class YourClassNameHere:
         md5 = hashlib.md5()
         md5.update(source.encode(encoding='utf-8'))
         return md5.hexdigest()
+    
+    def get_pendingorder_bico(self, market: str, offset: str, limit: str):
+        """
+        :param market: BTC_USDT
+        :param orderid: 1
+        :return:
+        """
+        path = "/api/v1/private/order/pending"
+        params = {
+            "api_key": self.api_key,
+            "market": market,
+            "offset": offset,
+            "limit": limit
+        }
+        
+        sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
+        print(sign_string)
+        md5_sign = str.upper(self.get_md5_32(sign_string))
+        params["sign"] = md5_sign
 
+        return self.post_bico(path=path, param_dict=params)
+    
     def cancel_allorder_bico(self, market: str):
         """
         :param market: BTC_USDT
         :param orderid: 1
         :return:
         """
-        path = "/api/v2/private/trade/cancelallorder"
+        path = "/api/v1/private/trade/cancelallorder"
         params = {
             "api_key": self.api_key,
             "market": market
@@ -51,11 +62,11 @@ class YourClassNameHere:
         
         sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
         print(sign_string)
-        md5_sign = str.upper(self.get_hmac_sha256(sign_string))
+        md5_sign = str.upper(self.get_md5_32(sign_string))
         params["sign"] = md5_sign
 
         return self.post_bico(path=path, param_dict=params)
-    
+
     def place_order_bico(self, market: str, amount: str = "0", side: str = "1", price: str = "0"):
         """
         :param market: BTC_USDT
@@ -64,7 +75,7 @@ class YourClassNameHere:
         :param price: 0.003 usdt
         :return:
         """
-        path = "/api/v2/private/trade/market"
+        path = "/api/v1/private/trade/market"
         params = {
             "amount": amount,
             "api_key": self.api_key,
@@ -72,58 +83,12 @@ class YourClassNameHere:
         }
         if price != "0":
             params["price"] = price
-            path = "/api/v2/private/trade/limit"
+            path = "/api/v1/private/trade/limit"
         params["side"] = side
         
         sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
         print(sign_string)
-        md5_sign = str.upper(self.get_hmac_sha256(sign_string))
-        params["sign"] = md5_sign
-
-        return self.post_bico(path=path, param_dict=params)
-
-    def create_user_withdraw(self, market: str, amount: str = "0", side: str = "1", price: str = "0"):
-        """
-        :param market: BTC_USDT
-        :param amount: 10.0
-        :param side: 1 ask, 2 bid
-        :param price: 0.003 usdt
-        :return:
-        """
-        path = "/api/v2/private/trade/market"
-        params = {
-            "amount": amount,
-            "api_key": self.api_key,
-            "market": market
-        }
-        if price != "0":
-            params["price"] = price
-            path = "/api/v2/private/trade/limit"
-        params["side"] = side
-        
-        sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
-        print(sign_string)
-        md5_sign = str.upper(self.get_hmac_sha256(sign_string))
-        params["sign"] = md5_sign
-
-        return self.post_bico(path=path, param_dict=params)
-
-    def cancel_user_withdraw(self, id: str = "1"):
-        """
-        :param market: BTC_USDT
-        :param amount: 10.0
-        :param side: 1 ask, 2 bid
-        :param price: 0.003 usdt
-        :return:
-        """
-        path = "/api/v2/private/trade/market"
-        params = {
-            "id": id,
-        }
-        
-        sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
-        print(sign_string)
-        md5_sign = str.upper(self.get_hmac_sha256(sign_string))
+        md5_sign = str.upper(self.get_md5_32(sign_string))
         params["sign"] = md5_sign
 
         return self.post_bico(path=path, param_dict=params)
@@ -132,7 +97,7 @@ class YourClassNameHere:
         """
         :return: assets json
         """
-        path = '/api/v2/private/user'
+        path = '/api/v1/private/user'
         params = {"api_key": self.api_key,
                   "secret_key": self.secret
                   }
@@ -140,59 +105,7 @@ class YourClassNameHere:
 
         params_sign = {
             "api_key": self.api_key,
-            "sign": str.upper(self.get_hmac_sha256(params_string))
-        }
-        print(params_sign)
-        return self.request(RequestMethod.POST, path, params_sign)
-
-    def order_pending(self, market: str, offset: str, limit: str):
-        """
-        :return: assets json
-        """
-        path = '/api/v2/private/order/pending'
-        
-        params = {
-            "api_key": self.api_key,
-            "market": market
-        }
-
-        sign_string = self.build_parameters(params) + "&secret_key=" + self.secret
-        print(sign_string)
-        md5_sign = str.upper(self.get_hmac_sha256(sign_string))
-        params["sign"] = md5_sign
-
-        return self.post_bico(path=path, param_dict=params)
-
-    def get_user_withdraw_list(self):
-        """
-        :return: assets json
-        """
-        path = '/api/v2/private/withdraw/list'
-        params = {"api_key": self.api_key,
-                  "secret_key": self.secret
-                  }
-        params_string = self.build_parameters(params)
-
-        params_sign = {
-            "api_key": self.api_key,
-            "sign": str.upper(self.get_hmac_sha256(params_string))
-        }
-        print(params_sign)
-        return self.request(RequestMethod.POST, path, params_sign)
-
-    def get_user_withdraw_addresss(self):
-        """
-        :return: assets json
-        """
-        path = '/api/v2/private/withdraw/address'
-        params = {"api_key": self.api_key,
-                  "secret_key": self.secret
-                  }
-        params_string = self.build_parameters(params)
-
-        params_sign = {
-            "api_key": self.api_key,
-            "sign": str.upper(self.get_hmac_sha256(params_string))
+            "sign": str.upper(self.get_md5_32(params_string))
         }
         print(params_sign)
         return self.request(RequestMethod.POST, path, params_sign)
@@ -215,7 +128,7 @@ class YourClassNameHere:
                 else:
                     self.logger.info(f"{response.status_code}-{response.reason}")
             except Exception as error:
-                print(f"requests:{path}, error: {repr(error)}")
+                self.logger.info(f"requests:{path}, error: {repr(error)}")
                 time.sleep(1)
         return None
 
@@ -260,17 +173,18 @@ if __name__ == "__main__":
     your_instance = YourClassNameHere(api_key, secret, host)
     
     # Example usage of place_order_bico method
-    market = "NIC_USDT"
-    amount = "0.01"
-    side = "2"  # 1 for sell ask, 2 for bid buy
-    price = "2200"  # 0 is market order
+    market = "SUI_USDT"
+    amount = "0.1"
+    side = "2"  # 1 for ask=sell, 2 for bid=buy
+    price = "200.2"
     response = your_instance.place_order_bico(market, amount, side, price)
+    # response = your_instance.place_order_bico(market, amount, 2, price)
     print("Place order response:", response)
-    response = your_instance.cancel_allorder_bico(market)
-    print("cancel order response:", response)
-    # response = your_instance.order_pending(market, "0", "10")
-    # print("order_pending order response:", response)
+    # response = your_instance.cancel_allorder_bico(market)
+    # print("cancel_allorder order response:", response)
+    # response = your_instance.get_pendingorder_bico(market, "0", "100")
+    # print("Pending order response:", response)
     
     # Example usage of get_user_assets method
-    # assets_response = your_instance.get_user_withdraw_addresss()
+    # assets_response = your_instance.get_user_assets()
     # print("User assets response:", assets_response)
