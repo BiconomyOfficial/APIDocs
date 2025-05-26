@@ -1615,7 +1615,7 @@ user: user id
 ##  Querying the Completed Order
 
 
-POST /api/v/private/order/finished 
+POST /api/v2/private/order/finished 
 
 Frequency limit: 500 times / s
 
@@ -1777,7 +1777,7 @@ user: user id
 
 ------
 
-## Query Details Of An Unfilled Order
+## Query Details Of An Finished Order
 
 
 
@@ -1903,7 +1903,7 @@ user: user id
 
 ## WebSocket Market Streams
 
-- The base endpoint is: **<u>wss://www.biconomy.com/ws</u>**
+- The base endpoint is: **<u>wss://bei.biconomy.com/ws</u>**
 - Streams can be subscribed in a single raw stream
 - The format subscribing to wss is unified, including method, params and id, {method: "", params: [], id: 5719}, and the parameter of id should not be same in singal individual socket.
 - client should send ping packet every 3 minutes, the format of the ping packet is {"method":"server.ping","params":[],"id":5160}, the format of the response packet is {"error": null, "result": "pong", "id": 5160}
@@ -2426,3 +2426,115 @@ Example Event:
 ​	{"method": "today.update", "params": ["BTC_USDT", {"low": "23727.7", "deal": "614923080.4154", "open": "23901.05", "last": "23769.64", "high": "24411.64", "volume": "25664.43"}], "id": null}
 ```
 
+
+#### Subscribe User Asset/Order Stream
+```
+Authentication Test:
+#!/bin/bash
+echo -n "api_key=key&secret_key=secret&timestamp=1719028320000" | openssl dgst -sha256 -hmac "secret"
+```
+Python code:
+```
+# -*- coding: utf-8 -*-
+import hmac
+import hashlib
+
+api_key = "key"
+secret_key = "secret"
+timestamp = "1719028320000"
+
+message = f"api_key={api_key}&secret_key={secret_key}&timestamp={timestamp}"
+hmac_key = secret_key.encode()
+message = message.encode()
+
+signature = hmac.new(hmac_key, message, hashlib.sha256).hexdigest()
+print(signature)
+```
+
+```
+Before subscribe channel, you need to verify sign. Send sign message to server with websocket.If websocket closed and reopen, need to verify sign again.
+
+Example:
+{"method":"server.sign","params":["api_key","sign",1719028320000],"id":1}
+```
+
+
+```
+Sign Parameters:
+
+​	method: server.sign
+
+​	params: There are three parameters in the array, the first is api_key, the second is sign, and the third is the milliseconds of timestamp
+
+ id: a number to identify the request, The serial number of the command, add one after sending each command, and the reply message will contain this ID to distinguish
+
+```
+
+
+```
+Subscribe asset channel:
+Example:
+{"method":"asset.subscribe","params":["BTC","ETH"],"id":1}
+```
+
+```
+Asset Parameters:
+
+​	method: asset.subscribe
+
+​	params: Subscribe some assets in the array, such as BTC, ETH
+
+ id: a number to identify the request, The serial number of the command, add one after sending each command, and the reply message will contain this ID to distinguish
+
+```
+
+
+```
+Subscribe order channel:
+Example:
+{"method":"order.subscribe","params":[],"id":1}
+```
+```
+Order Parameters:
+
+​	method: order.subscribe
+
+​	params: empty array
+
+ id: a number to identify the request, The serial number of the command, add one after sending each command, and the reply message will contain this ID to distinguish
+
+```
+```
+Order Message Example:
+[
+  3,
+  {
+    "id": 123,
+    "market": "XX_USDT",
+    "source": "api,127",
+    "type": 1,
+    "side": 1,
+    "user": 12345,
+    "ctime": 1619419244.949748,
+    "mtime": 1619419244.949748,
+    "price": "200.27",
+    "amount": "2.02",
+    "taker_fee": "0",
+    "maker_fee": "0",
+    "left": "2.02",
+    "deal_stock": "0",
+    "deal_money": "0",
+    "deal_fee": "0"
+  }
+]
+
+The first item in the array is a state code enum:
+enum {
+    ORDER_EVENT_PUT     = 1,
+    ORDER_EVENT_UPDATE  = 2,
+    ORDER_EVENT_FINISH  = 3,
+};
+
+The second item in the array is the order data detail.
+
+```

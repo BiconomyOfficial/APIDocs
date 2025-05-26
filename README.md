@@ -1903,7 +1903,7 @@ user: user id
 
 ## WebSocket Market Streams
 
-- The base endpoint is: **<u>wss://www.biconomy.com/ws</u>**
+- The base endpoint is: **<u>wss://bei.biconomy.com/ws</u>**
 - Streams can be subscribed in a single raw stream
 - The format subscribing to wss is unified, including method, params and id, {method: "", params: [], id: 5719}, and the parameter of id should not be same in singal individual socket.
 - client should send ping packet every 3 minutes, the format of the ping packet is {"method":"server.ping","params":[],"id":5160}, the format of the response packet is {"error": null, "result": "pong", "id": 5160}
