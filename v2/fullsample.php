@@ -51,7 +51,7 @@ class YourClassNameHere {
         return $this->post_bico($path, $params);
     }
 
-    // 其他方法如 create_user_withdraw, cancel_user_withdraw, get_user_assets, order_pending, get_user_withdraw_list, get_user_withdraw_addresss 类似于 place_order_bico
+    // Methods: create_user_withdraw, cancel_user_withdraw, get_user_assets, order_pending, get_user_withdraw_list, get_user_withdraw_addresss, place_order_bico
 
     private function request($req_method, $path, $requery_dict = null, $verify = false) {
         $url = $this->host . $path;
