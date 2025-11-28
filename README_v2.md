@@ -1,4 +1,4 @@
-# Biconomy OPEN API
+# Biconomy Open API (V2)
 
 
  \-  [**Getting Started**](#Getting-Started)
