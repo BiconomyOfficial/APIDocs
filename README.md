@@ -105,9 +105,8 @@ Provide market query, balance query, currency transaction, order management func
 
 ### Access URL
 
-\- Main URL: [https://market.biconomy.vip](https://market.biconomy.vip) 
+\- Main URL: [https://api.biconomy.com](https://api.biconomy.com) 
 
-\- Backup URL: [https://www.biconomy.com](https://www.biconomy.com) , when the Main URL is not avaliable, try to use the Backup URL.
 
 ### Request interaction
 
