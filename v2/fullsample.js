@@ -2,11 +2,13 @@ const axios = require('axios');
 const crypto = require('crypto');
 const querystring = require('querystring');
 
+// Enum for HTTP request methods
 class RequestMethod {
     static POST = 'POST';
     static GET = 'GET';
 }
 
+// Main class definition for API interaction
 class YourClassNameHere {
     constructor(apiKey, secret, host, tryCounts = 3, timeout = 1000, proxy = null) {
         this.apiKey = apiKey;
@@ -15,7 +17,7 @@ class YourClassNameHere {
         this.tryCounts = tryCounts;
         this.timeout = timeout;
         this.proxy = proxy;
-        // 初始化日志记录器（此处仅为占位符，具体实现取决于您的日志系统）
+        // Placeholder for logger initialization (depends on your logging system)
         this.logger = null;
     }
 
@@ -56,7 +58,8 @@ class YourClassNameHere {
 
         return this.request(RequestMethod.POST, path, params);
     }
-
+    
+    // Perform an HTTP request with specified method, path, data, and verification flag
     async request(method, path, requestData = null, verify = false) {
         let url = `${this.host}${path}`;
         let config = {
@@ -64,7 +67,7 @@ class YourClassNameHere {
             proxy: this.proxy,
             headers: {
                 'X-SITE-ID': '127',
-                // 添加这一行来指定Content-Type为application/x-www-form-urlencoded
+                // Set Content-Type to application/x-www-form-urlencoded
                 'Content-Type': 'application/x-www-form-urlencoded',
             }
         };
@@ -72,9 +75,9 @@ class YourClassNameHere {
         if (method === RequestMethod.GET && requestData) {
             url += `?${querystring.stringify(requestData)}`;
         } else if (requestData) {
-            // 当请求方法为POST，并且有requestData时，将其转换为x-www-form-urlencoded格式
+            // For POST method, convert requestData to x-www-form-urlencoded format
             if (method === RequestMethod.POST) {
-                // 将requestData转换为x-www-form-urlencoded格式的字符串
+                // Convert requestData to query string and append to URL
                 url += `?${querystring.stringify(requestData)}`;
                 config.data = querystring.stringify(requestData);
             }
@@ -91,12 +94,13 @@ class YourClassNameHere {
                 }
             } catch (error) {
                 console.log(`Request error: ${error.message}`);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // 等待1秒后重试
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
             }
         }
         return null;
     }
 
+    // Specifically handle POST requests for Bico API
     async postBico(path, postData) {
         const url = `${this.host}${path}`;
         const config = {
@@ -119,7 +123,7 @@ class YourClassNameHere {
                 }
             } catch (error) {
                 console.log(`Post request error: ${error.message}`);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // 等待1秒后重试
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
             }
         }
         return null;
@@ -131,7 +135,7 @@ class YourClassNameHere {
     }
 }
 
-// 使用示例
+// Example usage
 async function main() {
     const apiKey = "test_api_key_20240501";
     const secret = "test_secret_20240501";
@@ -141,7 +145,7 @@ async function main() {
 
     const market = "O2_USDT";
     const amount = "4590.3";
-    const side = "1";  // 1 for ask, 2 for bid
+    const side = "1";  // 1 for `ask`, 2 for `bid`
     const price = "0.00581";
     const orderResponse = await yourInstance.placeOrderBico(market, amount, side, price);
     console.log("Place order response:", orderResponse);
