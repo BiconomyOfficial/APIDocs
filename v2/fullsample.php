@@ -143,7 +143,7 @@ class YourClassNameHere {
 // Example usage:
 $api_key = "test_api_key_20240501";
 $secret = "test_secret_20240501";
-$host = "https://market.biconomy.vip";
+$host = "https://api.biconomy.com";
 
 // Initialize your class with your API credentials
 $your_instance = new YourClassNameHere($api_key, $secret, $host);
