@@ -135,7 +135,7 @@ class YourClassNameHere {
 async function main() {
     const apiKey = "test_api_key_20240501";
     const secret = "test_secret_20240501";
-    const host = "https://market.biconomy.vip";
+    const host = "https://api.biconomy.com";
 
     const yourInstance = new YourClassNameHere(apiKey, secret, host);
 
