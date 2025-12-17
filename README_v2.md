@@ -162,7 +162,7 @@ Frequency limit: 10 times / s
 ```
 Request:
 
-GET https://api.biconomy.com/api/v1/tickers
+GET /api/v1/tickers
 
 
 
@@ -262,7 +262,7 @@ Frequency limit: 10 times / s
 ```
 Request:
 
-GET https://api.biconomy.com/api/v1/depth?symbol=BTC_USDT
+GET /api/v1/depth?symbol=BTC_USDT
 
 
 
@@ -326,7 +326,7 @@ Frequency limit: 10 times / s
 ```
 Request:
 
-GET https://api.biconomy.com/api/v1/trades?symbol=BTC_USDT&size=1
+GET /api/v1/trades?symbol=BTC_USDT&size=1
 
 
 
@@ -406,7 +406,7 @@ Frequency limit: 10 times / s
 ```
 Request:
 
-GET https://api.biconomy.com/api/v1/kline?symbol=BTC_USDT&type=1min&size=10
+GET /api/v1/kline?symbol=BTC_USDT&type=1min&size=10
 
 
 
@@ -507,7 +507,7 @@ Frequency limit: 10 times / s
 ```
 Request:
 
-GET https://api.biconomy.com/api/v1/exchangeInfo
+GET /api/v1/exchangeInfo
 
 
 
@@ -653,7 +653,7 @@ Frequency limit: 20 times / s
 
 Request:
 
-POST https://api.biconomy.com/api/v2/private/user
+POST /api/v2/private/user
 
 
 
@@ -794,7 +794,7 @@ Frequency limit: 20 times / s
 
 Request:
 
-POST https://api.biconomy.com/api/v2/private/trade/limit
+POST /api/v2/private/trade/limit
 
 
 
@@ -923,7 +923,7 @@ Frequency limit: 20 times / s
 
 Request: 
 
-POST https://api.biconomy.com/api/v2/private/trade/market
+POST /api/v2/private/trade/market
 
 
 
@@ -1047,7 +1047,7 @@ Frequency limit: 20 times / s
 
 Request: 
 
-POST https://api.biconomy.com/api/v2/private/trade/cancel
+POST /api/v2/private/trade/cancel
 
 
 
@@ -1177,7 +1177,7 @@ Frequency limit: 20 times / S
 
 Request:
 
-POST https://api.biconomy.com/api/v2/private/trade/cancel_batch
+POST /api/v2/private/trade/cancel_batch
 
 
 
@@ -1272,7 +1272,7 @@ Frequency limit: 20 times / s
 
 # Request 
 
-POST https://api.biconomy.com/api/v2/private/order/deals
+POST /api/v2/private/order/deals
 
 # Response
 
@@ -1383,7 +1383,7 @@ Frequency limit: 20 times / s
 
 # Request 
 
-POST https://api.biconomy.com/api/v2/private/order/pending
+POST /api/v2/private/order/pending
 
 # Response
 
@@ -1515,7 +1515,7 @@ Frequency limit: 20 times / s
 
 Request:
 
-POST https://api.biconomy.com/api/v2/private/order/pending/detail
+POST /api/v2/private/order/pending/detail
 
 
 
@@ -1639,7 +1639,7 @@ Frequency limit: 500 times / s
 
 Request: 
 
-POST https://api.biconomy.com/api/v2/private/order/finished
+POST /api/v2/private/order/finished
 
 
 Response:
@@ -1805,7 +1805,7 @@ Frequency limit: 20 times / s
 
 Request:
 
-POST https://api.biconomy.com/api/v2/private/order/finished/detail
+POST /api/v2/private/order/finished/detail
 
 
 
