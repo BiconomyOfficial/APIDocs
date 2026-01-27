@@ -1150,8 +1150,6 @@ user: userid
 
 
 POST /api/v1/private/trade/cancel_batch 
-The number of orders cancelled in batches each time does not exceed 10.
-
 
 Frequency limit: 20 times / S
 
