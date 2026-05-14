@@ -59,6 +59,22 @@
 
 
 
+\- [**WebSocket Market Streams**](#WebSocket-Market-Streams)
+
+ \- [**Depth Stream**](#Depth-Stream)
+
+ \- [**Kline Stream**](#Kline-Stream)
+
+ \- [**Deal Stream**](#Deal-Stream)
+
+ \- [**Last Price Stream**](#Last-Price-Stream)
+
+ \- [**24hour Market State Stream**](#24hour-Market-State-Stream)
+
+ \- [**Today Market State Stream**](#Today-Market-State-Stream)
+
+
+
 
 
 ## Getting Started
@@ -1456,4 +1472,520 @@ orderId: order id
 
 time: trade time, milliseconds
 
+```
+
+
+
+## WebSocket Market Streams
+
+- The base endpoint is: **<u>wss://bei.biconomy.com/ws</u>**
+- Streams can be subscribed in a single raw stream
+- The format subscribing to wss is unified, including method, params and id, {method: "", params: [], id: 5719}, and the parameter of id should not be same in singal individual socket.
+- client should send ping packet every 30 seconds, the format of the ping packet is {"method":"server.ping","params":[],"id":5160}, the format of the response packet is {"error": null, "result": "pong", "id": 5160}
+
+
+
+
+### Depth Stream
+
+
+
+#### Subscribe Depth Stream
+
+```
+Parameters:
+
+​	method: depth.subscribe
+
+​	params:
+
+​		symbol -- BTC_USDT
+
+​		depth -- depth length, currently supported are in the lists, [5, 10, 15, 20, 30, 50, 100]
+
+​		precision -- price precision, currently supported precisions are in the lists, [0, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001, 0.00000001]
+```
+
+
+
+```
+Example:
+
+​	request:
+
+​		{"method":"depth.subscribe","params":["BTC_USDT",50,"0.01"],"id":2066}
+
+​	response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2066}
+```
+
+
+
+#### Unsubscribe Depth Stream
+
+```
+Parameters:
+
+​	method: depth.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	request:
+
+​		{"method":"depth.unsubscribe","params":[],"id":2067}
+
+​	response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2067}
+```
+
+
+
+#### Depth Push Event
+
+```
+Parameters:
+
+​	method: depth.update
+
+​	params:
+
+​		is_full: true or false
+
+​		asks: ask order lists
+
+​		bids: bid order lists
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "depth.update", "params": [true, {"asks": [["21505.92", "0.02"], ["21505.93", "0.09"]...], "bids ": [["21505.21", "0.01"], ["21505.2", "0.22"]...]}, "BTC_USDT"], "id": null}
+
+​	{"method": "depth.update", "params": [false, {"bids": [["21505.93", "0.03"]]}, "BTC_USDT"], "id": null}
+```
+
+
+
+### Kline Stream
+
+
+
+#### Subscribe Kline Stream
+
+```
+Parameters:
+
+​	method: kline.subscribe
+
+​	params:
+
+​		symbol -- BTC_USDT
+
+​		interval -- the time interval of kline in seconds, such as 15 minutes set to 900, and 1 day set to 86400
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"kline.subscribe","params":["BTC_USDT",900],"id":2068}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2068}
+```
+
+
+
+#### Unsubscribe Kline Stream
+
+```
+Parameters:
+
+​	method: kline.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"kline.unsubscribe","params":[],"id":2069}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2069}
+```
+
+
+
+#### Kline Push Event
+
+```
+Parameters:
+
+​	method: kline.update
+
+​	params:
+
+​		The fields in params are: timestamp, opening price, closing price, highest price, lowest price, volume, deal, pair name
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "kline.update", "params": [[1660924800, "21444.54", "21445.84", "21447.87", "21437.21", "21.74", "466178.2626", "BTC_USDT"]], " id": null}
+```
+
+
+
+### Deal Stream
+
+
+
+#### Subscribe Deal Stream
+
+```
+Parameters:
+
+​	method: deals.subscribe
+
+​	params:
+
+​		symbol -- BTC_USDT
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"deals.subscribe","params":["BTC_USDT"],"id":2070}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2070}
+```
+
+
+
+#### Unsubscribe Deal Stream
+
+```
+Parameters:
+
+​	method: deals.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"deals.unsubscribe","params":[],"id":2071}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2071}
+```
+
+
+
+#### Deal Push Event
+
+```
+Parameters:
+
+​	method: deals.update
+
+​	params:
+
+​		The fields in params are: pair name, amount, timestamp, transaction ID, transaction type, price
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "deals.update", "params": ["BTC_USDT", [{"amount": "0.2", "time": 1660924893.1702139, "id": 848000900, "type": "buy", "price": "21446.35"}, {"amount": "0.03", "time": 1660924893.1698799, "id": 848000899, "type": "buy", "price": "21446.34"}]], "id": null}
+
+​	{"method": "deals.update", "params": ["BTC_USDT", [{"amount": "0.02", "time": 1660924901.0485499, "id": 848002029, "type": "sell", "price": "21445.84"}]], "id": null}
+```
+
+
+
+### Last Price Stream
+
+
+
+#### Subscribe Last Price Stream
+
+```
+Parameters:
+
+​	method: price.subscribe
+
+​	params:
+
+​		symbols -- list of the pair, ["BTC_USDT","ETH_USDT"...]
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"price.subscribe","params":["BTC_USDT","ETH_USDT"],"id":2072}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2072}
+```
+
+
+
+#### Unsubscribe Last Price Stream
+
+```
+Parameters:
+
+​	method: price.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"price.unsubscribe","params":[],"id":2073}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2073}
+```
+
+
+
+#### Last Price Push Event
+
+```
+Parameters:
+
+​	method: price.update
+
+​	params:
+
+​		The fields in params are: pair name, last price
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "price.update", "params": ["BTC_USDT", "21446.34"], "id": null}
+```
+
+
+
+### 24hour Market State Stream
+
+
+
+#### Subscribe 24hour Market State Stream
+
+```
+Parameters:
+
+​	method: state.subscribe
+
+​	params:
+
+​		symbols -- list of the pair, ["BTC_USDT","ETH_USDT"...]
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"state.subscribe","params":["BTC_USDT","ETH_USDT"],"id":2074}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2074}
+```
+
+
+
+#### Unsubscribe 24hour Market State Stream
+
+```
+Parameters:
+
+​	method: state.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"state.unsubscribe","params":[],"id":2075}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2075}
+```
+
+
+
+#### 24hour Market State Push Event
+
+```
+Parameters:
+
+​	method: state.update
+
+​	params:
+
+​		The fields in params are: pair name, period, last price, opening price, closing price, highest price, lowest price, volume, deal
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "state.update", "params": ["BTC_USDT", {"period": 86400, "last":"23728.7", "open": "23901.05", "close": "23902.11", "high": "24411.64", "low": "23727.7", "volume": "25664.43", "deal": "614923080.4154"}], "id": null}
+```
+
+
+
+### Today Market State Stream
+
+
+
+#### Subscribe Today Market State Stream
+
+```
+Parameters:
+
+​	method: today.subscribe
+
+​	params:
+
+​		symbols -- list of the pair, ["BTC_USDT","ETH_USDT"...]
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"today.subscribe","params":["BTC_USDT","ETH_USDT"],"id":2076}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2076}
+```
+
+
+
+#### Unsubscribe Today Market State Stream
+
+```
+Parameters:
+
+​	method: today.unsubscribe
+
+​	params: []
+```
+
+
+
+```
+Example:
+
+​	Request:
+
+​		{"method":"today.unsubscribe","params":[],"id":2077}
+
+​	Response:
+
+​		{"error": null, "result": {"status": "success"}, "id": 2077}
+```
+
+
+
+#### Today Market State Push Event
+
+```
+Parameters:
+
+​	method: today.update
+
+​	params:
+
+​		The fields in params are: pair name, lowest price, deal, opening price, latest price, highest price, volume
+
+​	id: null
+```
+
+
+
+```
+Example Event:
+
+​	{"method": "today.update", "params": ["BTC_USDT", {"low": "23727.7", "deal": "614923080.4154", "open": "23901.05", "last": "23769.64", "high": "24411.64", "volume": "25664.43"}], "id": null}
 ```
