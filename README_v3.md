@@ -208,7 +208,7 @@ All responses use the unified envelope below:
 
 GET /api/v3/ping
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 5 req/s per IP
 
 
 
@@ -238,7 +238,7 @@ Response:
 
 GET /api/v3/time
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 5 req/s per IP
 
 
 
@@ -276,7 +276,7 @@ serverTime: server time in milliseconds
 
 GET /api/v3/symbols
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 20 req/s per IP
 
 
 
@@ -352,7 +352,7 @@ marketTakerFee: market-order taker fee rate
 
 GET /api/v3/tickers
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 20 req/s per IP
 
 
 
@@ -416,7 +416,7 @@ sell: best ask price
 
 GET /api/v3/depth
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 20 req/s per IP
 
 
 
@@ -472,7 +472,7 @@ bids: bid[price, amount]
 
 GET /api/v3/trades
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 20 req/s per IP
 
 
 #### parameter
@@ -539,7 +539,7 @@ type: BUY / SELL (taker side)
 
 GET /api/v3/klines
 
-Frequency limit: configured per-endpoint (IP-based)
+Frequency limit: 10 req/s per IP
 
 
 
@@ -714,6 +714,8 @@ GET /api/v3/account/assets
 
 Permission: `asset.read`
 
+Frequency limit: 10 req/s per user
+
 
 
 ### example
@@ -772,6 +774,8 @@ freeze: frozen balance
 POST /api/v3/trade/order
 
 Permission: `spot.write`
+
+Frequency limit: 10 req/s per user
 
 
 
@@ -878,6 +882,8 @@ POST /api/v3/trade/batchOrders
 
 Permission: `spot.write`
 
+Frequency limit: 5 req/s per user
+
 Up to 20 sub-orders per request. Only `LIMIT` orders are supported in batch.
 
 
@@ -966,6 +972,8 @@ The `data` array preserves the order of the request `orders` array. Each entry h
 POST /api/v3/trade/cancelOrder
 
 Permission: `spot.write`
+
+Frequency limit: 10 req/s per user when `orderId` is provided (cancel a single order); 5 req/s per user when `orderId` is omitted (cancel all orders on the symbol)
 
 
 
@@ -1064,6 +1072,8 @@ POST /api/v3/trade/cancelBatchOrders
 
 Permission: `spot.write`
 
+Frequency limit: 5 req/s per user
+
 Up to 20 order ids per request.
 
 
@@ -1120,6 +1130,8 @@ Response:
 GET /api/v3/trade/openOrders
 
 Permission: `spot.read`
+
+Frequency limit: 10 req/s per user
 
 
 
@@ -1218,6 +1230,8 @@ GET /api/v3/trade/historyOrders
 
 Permission: `spot.read`
 
+Frequency limit: 10 req/s per user
+
 
 
 ### parameter
@@ -1312,6 +1326,8 @@ GET /api/v3/trade/myTrades
 
 Permission: `spot.read`
 
+Frequency limit: 10 req/s per user
+
 
 
 ### parameter
@@ -1402,6 +1418,8 @@ time: trade time, milliseconds
 GET /api/v3/trade/orderTrades
 
 Permission: `spot.read`
+
+Frequency limit: 10 req/s per user
 
 Query the trades that belong to a single order.
 
