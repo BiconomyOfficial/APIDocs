@@ -694,7 +694,7 @@ Every API key carries a `permissions` JSON object with the following scopes:
 | Scope            | Required for                                              |
 | ---------------- | --------------------------------------------------------- |
 | `asset.read`     | `/api/v3/account/assets`                                  |
-| `spot.read`      | `/api/v3/trade/openOrders`, `/historyOrders`, `/myTrades`, `/orderTrades` |
+| `spot.read`      | `/api/v3/trade/openOrders`, `/openOrder/detail`, `/historyOrders`, `/historyOrder/detail`, `/myTrades`, `/orderTrades` |
 | `spot.write`     | `/api/v3/trade/order`, `/batchOrders`, `/cancelOrder`, `/cancelBatchOrders` |
 | `transfer.read`  | reserved                                                  |
 | `transfer.write` | reserved                                                  |
@@ -1223,6 +1223,75 @@ updateTime: order update time, in milliseconds
 ------
 
 
+## Query Open Order Detail
+
+
+GET /api/v3/trade/openOrder/detail
+
+Permission: `spot.read`
+
+Frequency limit: 10 req/s per user
+
+
+
+### parameter
+
+
+
+| Parameter | required | type   | description       |
+| --------- | -------- | ------ | ----------------- |
+| symbol    | true     | string | BTC_USDT          |
+| orderId   | true     | int64  | order id          |
+
+
+
+### example
+
+```
+
+Request:
+
+GET /api/v3/trade/openOrder/detail?symbol=BTC_USDT&orderId=32871
+
+
+
+Response:
+
+{
+  "code": 0,
+  "message": "Success",
+  "data": {
+    "id": 32871,
+    "symbol": "BTC_USDT",
+    "type": "LIMIT",
+    "side": "BUY",
+    "status": "NEW",
+    "price": "5.1",
+    "amount": "1",
+    "left": "1",
+    "filledAmount": "0",
+    "filledTotal": "0",
+    "fee": "0",
+    "createTime": 1535544362168,
+    "updateTime": 1535544362168
+  }
+}
+
+```
+
+
+
+### Response
+
+Same field semantics as `Query Open Orders`.
+
+If the order does not exist, belongs to another user, or its market does not match the requested `symbol`, the API uniformly returns `400103 Order not found` (the response does not distinguish these cases, to avoid leaking order existence).
+
+
+
+------
+
+
 ## Query History Orders
 
 
@@ -1314,6 +1383,73 @@ createTime: order create time, milliseconds
 finishTime: order finish time, milliseconds
 
 ```
+
+
+------
+
+
+## Query History Order Detail
+
+
+GET /api/v3/trade/historyOrder/detail
+
+Permission: `spot.read`
+
+Frequency limit: 10 req/s per user
+
+
+
+### parameter
+
+
+
+| Parameter | required | type  | description |
+| --------- | -------- | ----- | ----------- |
+| orderId   | true     | int64 | order id    |
+
+
+
+### example
+
+```
+
+Request:
+
+GET /api/v3/trade/historyOrder/detail?orderId=32868
+
+
+
+Response:
+
+{
+  "code": 0,
+  "message": "Success",
+  "data": {
+    "id": 32868,
+    "symbol": "BTC_USDT",
+    "type": "MARKET",
+    "side": "BUY",
+    "status": "FILLED",
+    "price": "0",
+    "amount": "1",
+    "filledAmount": "0.19607843",
+    "filledTotal": "0.999999993",
+    "fee": "0.00019607843",
+    "createTime": 1535538409189,
+    "finishTime": 1535538409189
+  }
+}
+
+```
+
+
+
+### Response
+
+Same field semantics as `Query History Orders`.
+
+If the order does not exist or belongs to another user, the API uniformly returns `400103 Order not found` (the response does not distinguish these cases, to avoid leaking order existence).
+
 
 
 ------
